@@ -1,0 +1,20 @@
+apiVersion: apps/v1
+kind: DaemonSet
+metadata:
+  name: task3
+  labels:
+    myapp: oneinstance
+spec:
+  selector:
+    matchLabels:
+      name: mypod
+  template:
+    metadata:
+      labels:
+        name: mypod
+    spec:
+      nodeSelector:
+        kubernetes.io/os: linux
+      containers:
+      - name: redis
+        image: redis

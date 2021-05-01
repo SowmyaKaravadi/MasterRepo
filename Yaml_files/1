@@ -1,0 +1,16 @@
+apiVersion: apps/v1
+kind: DaemonSet
+metadata:
+  name: 'redis-label'
+spec:
+ selector:
+    matchLabels:
+     name: redis
+ template:
+   metadata:
+    name: redis-label
+   spec:
+    containers:
+    - name: nginx
+      image: nginx
+
