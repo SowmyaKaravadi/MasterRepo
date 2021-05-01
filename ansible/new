@@ -1,0 +1,2 @@
+NAME          STATUS     ROLES    AGE   VERSION
+kubecluster   NotReady   master   36s   v1.18.3

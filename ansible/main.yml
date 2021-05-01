@@ -1,0 +1,40 @@
+---
+- hosts: localhost
+  become: true
+  tasks: 
+  - name: Getting packages from K8's
+    get_url:
+      url: https://github.com/flanksource/konfigadm/releases/download/v0.5.3/konfigadm
+      dest: /usr/bin/konfigadm
+
+  - name: Changing permisiions to kube file
+    file: 
+      path: /usr/bin/konfigadm
+      mode: u+x
+  - git: 
+      repo: https://github.com/xxxxxx/dell-repo.git
+      dest: /tmp/task
+      update: yes
+  - name: Applying Konfigadm
+    shell: konfigadm apply --config=/tmp/task/konfigadm.yml
+  - git: 
+      repo: https://github.com/xxxxxxxx/kubeadm.git
+      dest: /tmp/task2
+      update: yes
+  - name: Replacing IP Address
+    shell: sed -i "s/'52.149.152.174'/$(hostname --ip-address)/g" /tmp/task2/kubeadm.yaml
+  - name: Initializing Kubeadm
+    action: shell kubeadm init --config /tmp/task2/kubeadm.yaml
+  - name: Configuring kubectl
+    shell: 
+      cmd: kubectl --kubeconfig /etc/kubernetes/admin.conf apply -f https://docs.projectcalico.org/v3.8/manifests/calico.yaml
+  - name: Exporting KUBECONFIG
+    become: true
+    shell: export KUBECONFIG=/etc/kubernetes/admin.conf
+    
+  - name : Sleep
+    become: true
+    shell: sleep 20  
+  - name : Nodes retrieving
+    become: true
+    shell: sudo kubectl get nodes -n kube-system >> new && cat new
