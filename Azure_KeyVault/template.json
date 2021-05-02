@@ -1,0 +1,68 @@
+{
+    "$schema": "https://schema.management.azure.com/schemas/2015-01-01/deploymentTemplate.json#",
+    "contentVersion": "1.0.0.0",
+    "parameters": {
+        "KeyVault-name": {            
+            "type": "String"
+        },
+		"ResourceGroup-name": {            
+            "type": "String"
+        },
+		"Location-name": {            
+            "type": "String"
+        },
+		"SP-object-ID": {            
+            "type": "String"
+        },
+		"User-object-ID": {            
+            "type": "String"
+        }
+    },
+    "variables": {},
+    "resources": [
+        {
+            "type": "Microsoft.KeyVault/vaults",
+            "apiVersion": "2016-10-01",
+            "name": "[parameters('KeyVault-name')]",
+            "location": "[parameters('Location-name')]",
+            "properties": {
+                "sku": {
+                    "family": "A",
+                    "name": "Standard"
+                },
+                "tenantId": "4a858b12-aeb8-44f7-9213-3be70445d323",
+                "accessPolicies": [
+                    {
+                        "tenantId": "4a858b12-aeb8-44f7-9213-3be70445d323",
+                        "objectId": "[parameters('SP-object-ID')]",
+                        "permissions": {
+                            "keys": [],
+                            "secrets": [
+                                "Get",
+                                "List"
+                            ],
+                            "certificates": []
+                        }
+                    },
+                    {
+                        "tenantId": "4a858b12-aeb8-44f7-9213-3be70445d323",
+                        "objectId": "[parameters('User-object-ID')]",
+                        "permissions": {
+                            "keys": [],
+                            "secrets": [
+                                "Get",
+                                "List",
+                                "Set"
+                            ],
+                            "certificates": []
+                        }
+                    }
+                ],
+                "enabledForDeployment": false,
+                "enabledForDiskEncryption": false,
+                "enabledForTemplateDeployment": false,
+                "enableSoftDelete": true
+            }
+        }
+    ]
+}
